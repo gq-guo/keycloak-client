@@ -9,6 +9,8 @@ from functools import lru_cache
 import requests
 from cached_property import cached_property
 
+from django.conf import settings
+
 from .constants import EnvVar, Defaults, FileMode, Logger
 from .utils import Singleton
 
@@ -27,14 +29,37 @@ class DataClassMixin:
 
 @dataclass(init=False)
 class Client(DataClassMixin):
-    realm: str
-    auth_server_url: str
-    ssl_required: str
-    resource: str
-    verify_token_audience: str
-    credentials: Dict
-    confidential_port: int
-    policy_enforcer: Dict
+    @property
+    def realm(self) -> str:
+        return settings.KEYCLOAK_REALM
+
+    @property
+    def auth_server_url(self) -> str:
+        return settings.KEYCLOAK_AUTH_SERVER_URL
+
+    @property
+    def ssl_required(self) -> str:
+        return settings.KEYCLOAK_SSL_REQUIRED
+
+    @property
+    def resource(self) -> str:
+        return settings.KEYCLOAK_RESOURCE
+
+    @property
+    def verify_token_audience(self) -> bool:
+        return settings.KEYCLOAK_VERIFY_TOKEN_AUDIENCE
+
+    @property
+    def credentials(self) -> Dict:
+        return settings.KEYCLOAK_CREDENTIALS
+
+    @property
+    def confidential_port(self) -> int:
+        return settings.KEYCLOAK_CONFIDENTIAL_PORT
+
+    @property
+    def policy_enforcer(self) -> Dict:
+        return settings.KEYCLOAK_POLICY_ENFORCER
 
     @property
     def client_id(self) -> str:
